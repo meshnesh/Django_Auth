@@ -10,10 +10,18 @@ from django.contrib import messages
 
 # Kiilu imports
 # Rendering views
+
 from .models import SimplePlace, Create_opportunity, RequestApplication
 from .forms import SingleSkillForm, PlacedForm, SkillsForm, DateForm, addForm, ApplyForm
-from datetime import timedelta
+from datetime import timedelta, datetime, time
 from django.db import transaction
+from django.contrib.auth.models import User
+from django.core import mail
+from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
+from django.template import Context, Template, RequestContext
+from smtplib import SMTPRecipientsRefused
+import vobject
+from email.mime.text import MIMEText
 
 # Math class
 import math
@@ -197,13 +205,37 @@ def current_opportunities(request):
 	
 def single_request(request, id=None):
 	opportunity = get_object_or_404(Create_opportunity, id = id)
-	print opportunity.title
+	current_ids = RequestApplication.objects.values('user_id').filter(requests=opportunity)
+	offers = User.objects.values().filter(
+		Q(id__in=current_ids)
+		)
+	print offers
 	context = {
 		'opportunity':opportunity,
+		'offers':offers,
 	}
 	return render(request, 'profiles/single_request.html', context)
 
+
+def ical(dtstart, dtend, summary, path):
+	cal = vobject.iCalendar()
+	cal.add('method').value = 'PUBLISH'  # IE/Outlook needs this
+
+	vevent = cal.add('vevent')
+	vevent.add('dtstart').value = dtstart
+	vevent.add('dtend').value = dtend
+	vevent.add('summary').value = summary
+	vevent.add('uid').value = path
+	vevent.add('dtstamp').value = datetime.now()
+
+	icalstream = cal.serialize()
+	part = MIMEText(icalstream,'calendar')
+	part.add_header('Filename','request.ics') 
+	part.add_header('Content-Disposition','attachment; filename=request.ics') 
+	return part
+
 def helper_request(request, id=None):
+	print request.user
 	opportunity = get_object_or_404(Create_opportunity, id = id)
 	if not RequestApplication.objects.filter(requests=opportunity).exists():
 		form = ApplyForm(data = request.POST or None)
@@ -212,25 +244,49 @@ def helper_request(request, id=None):
 			instance.user = request.user
 			instance.requests = opportunity
 			print "Obj not exist"
-			instance.application = True 
 			instance.save()
-			return redirect('browse')
+			message_body = "This is an notification for a job involving:\n" + opportunity.description +\
+				"\nThe job requires the following skills: " + ", ".join([skill['skill'] for skill in opportunity.skills.values('skill')]) 
+				
+			subject, from_email, to = opportunity.title, 'justinjestscurrae@gmail.com', [request.user.email]
+			calendar = ical(
+					opportunity.starting_date,
+					opportunity.stopping_date,
+					opportunity.title,
+					"https://sccial-ckiilu.c9users.io/" + str(opportunity.get_absolute_url())
+					)
+			print (calendar)
+			html_content = Template("""
+			<p>This is an notification for a job involving:</p>
+			<div style="margin-left:55px;">{{ opportunity.description }}</div>
+			<p>The job requires the following skills:</p>
+			<ul style="list-style-type:none;">
+			{% for skill in opportunity.skills.all %}			
+			<li>{{ skill }}</li>
+	  		{% endfor %}
+			</ul>
+			""").render(RequestContext(request, {'opportunity': opportunity}))
+			msg = EmailMultiAlternatives(subject, message_body, from_email, to)
+			msg.attach_alternative(html_content, "text/html")
+			try:
+				msg.attach(calendar)
+			except AssertionError:
+				print("Whaaat! AssertionError!")
+			msg.send()
 		else:
 			form = ApplyForm()
+			print "Obj not exist, form invalid"
 	else:
 		form = ApplyForm(data = request.POST or None, instance=opportunity)		
-		current_request = RequestApplication.objects.filter(requests=opportunity)
-		current_application_val = current_request.values('application')[0]['application']
+		current_request = RequestApplication.objects.get(requests=opportunity).application
 		if form.is_valid():
 			instance = form.save(commit=False)
-			instance.application = False if current_application_val == True else False
-			with transaction.atomic():
-				current_application_val = form.cleaned_data.get("application")
-			print "Obj exists"
 			instance.save()
-			return redirect('browse')
+			print "Obj exists"
 		else:
 			form = ApplyForm()
+			print "Obj exists, form invalid"
+		RequestApplication.objects.get(requests=opportunity).delete()
 	
 	print opportunity.title
 	context = {
@@ -238,6 +294,16 @@ def helper_request(request, id=None):
 		'form': form,
 	}
 	return render(request, 'profiles/browseOpportunity.html', context)
+def commitments(request):
+	current_ids = RequestApplication.objects.values('requests_id').filter(
+		Q(user__exact=request.user.id)
+		)
+	current = Create_opportunity.objects.filter(id__in=current_ids)
+	print current
+	context = {
+		'current':current,
+	}
+	return render(request, 'profiles/commitments.html', context)
 
 #############################################################
 #frank
@@ -254,6 +320,8 @@ def create_opportunity_form(request):
         form.save_m2m()
         
         return redirect('/seeker/')
+    else:
+    	print("Form invalid")
     context = {
         'form' : form
     }
@@ -266,4 +334,21 @@ def browse(request):
     }
     return render(request, 'profiles/browse.html', context)
     
+def view_profile(request):
+	# name = user.username
+	location = SimplePlace.objects.get(user=request.user.id).location
+	current = Create_opportunity.objects.filter(
+		Q(user__exact=request.user.id) &
+		Q(stopping_date__gt=timezone.now()) &
+		Q(starting_date__lte=timezone.now() + timedelta(days=30))
+	)
+
+	context={
+		# 'user':name,
+		'location': location,
+		'current': current,
+
+	}
+	return render(request, 'profiles/view_profile.html', context)    
+   
 ###############################################################    

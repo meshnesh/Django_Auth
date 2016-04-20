@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+<!--{% block content %}-->
+<!--its all right {{ user.username }}<br>-->
+<!--{{ location }}<br>-->
+<!--{% for list in current %}-->
+<!--{{ list.title }}<br>-->
+<!--{{ list.location }}<br>-->
+<!--{% endfor %}-->
+<!--{% endblock %}-->
+#################################################################################
+<div class="card">
+    <header>
+        <h1>{{ user.username }}</h1>
+        <h2>Pet, dog and animal</h2>
+        <a href="#"><img src="/img/user.jpg" alt="" target="_blank" class="avatar"></a>
+
+    </header>
+    <article>
+        <p>Tommy is a dog, he likes bones, sleeping and backend doggy.</p>
+        <div class="row medium-uncollapse large-collapse">
+            <ul class="list-unstyled">
+                <div class="small-6 columns">
+                    <li><a href="https://facebook.com/"><i class="fa fa-fw fa-facebook"></i> Facebook</a></li>
+                </div>
+                <div class="small-6 columns">
+                    <li><a href="https://linked.com/"><i class="fa fa-fw fa-linked"></i> Linked</a></li>
+                </div>
+            </ul>
+        </div>
+
+
+        <div class=" lawns column row">
+            Mawing Lawns
+        </div>
+
+
+
+
+    </article>
+
+    <footer>
+
+   <hr>
+        <a class="tiny button" href="#">Accept</a>
+        <p class="cf">
+            <small>
+      <a class="align-left share" href="#"><i class="fa fa-fw fa-share"></i> share</a>
+      <a href="#" class="align-right alert">report <i class="fa fa-fw fa-exclamation"></i></a>
+      </small>
+
+        </p>
+    </footer>
+</div>

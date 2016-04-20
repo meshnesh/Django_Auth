@@ -77,12 +77,16 @@ class addForm(forms.ModelForm):
             "hours_required",
             "starting_date",
             "stopping_date",
+            "starting_time",
+            "stopping_time",
             "description",
         ]
         widgets = {
         	'skills': forms.CheckboxSelectMultiple(attrs={'class': 'skillform'}),
         	'starting_date': forms.DateInput(attrs={'class': 'datepicker'}),
-        	'stopping_date': forms.DateInput(attrs={'class':'datepicker'})
+        	'stopping_date': forms.DateInput(attrs={'class':'datepicker'}),
+        	'starting_time': forms.TimeInput(attrs={'class': 'timepicker'}),
+        	'stopping_time': forms.TimeInput(attrs={'class':'timepicker'}),
         }
         
 #############################################################################

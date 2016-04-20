@@ -88,15 +88,6 @@ class Dated(models.Model):
     def __unicode__(self):
     	return str(self.user)
 
-# class RequestApplication(models.Model):
-#     user =  models.OneToOneField(
-# 	    settings.AUTH_USER_MODEL,
-# 	    on_delete=models.CASCADE
-# 	    )
-# 	requests = models.OneToOneField(
-# 	    Create_opportunity,
-# 	    on_delete=models.CASCADE)
-# 	application = models.BooleanField()
 #=======================================================
 
 #########################################################
@@ -114,6 +105,8 @@ class Create_opportunity(models.Model):
     description = models.TextField(null=True)
     skills = models.ManyToManyField(Skills)
     hours_required = models.CharField(max_length=140, blank = True)
+    starting_time = models.TimeField()
+    stopping_time = models.TimeField()
     starting_date = models.DateField()
     stopping_date = models.DateField()
     created_date = models.DateTimeField(
