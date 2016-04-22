@@ -1,7 +1,8 @@
    {% extends 'base.html' %}
 {% load staticfiles %}
-
-
+ {% block nav %}
+        {% include 'profiles/navigation.html' %}
+        {% endblock %}
 {% block content %}
 <div class="row landing expanded">
 <div class="introduction">
@@ -10,19 +11,19 @@
     <p>We connect volunteers with opportunities across organizations and communities</p>
     <p>Join to offer or to look for best volunteering experience</p>
     <br>
-    <a href="/accounts/login/" class="button ontop" >Get Started+</a>
-    <ul class="bg-bubbles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
+    <a href="/accounts/login/" class="button ontop" >Get Started</a>
+    <!--<ul class="bg-bubbles">-->
+    <!--    <li></li>-->
+    <!--    <li></li>-->
+    <!--    <li></li>-->
+    <!--    <li></li>-->
+    <!--    <li></li>-->
+    <!--    <li></li>-->
+    <!--    <li></li>-->
+    <!--    <li></li>-->
+    <!--    <li></li>-->
+    <!--    <li></li>-->
+    <!--</ul>-->
 </div> 
 </div>
 </div>

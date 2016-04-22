@@ -1,0 +1,27 @@
+{% load staticfiles %}
+    <div class="overlay-navigation">
+        <nav role="navigation">
+            <ul>
+                <li><a href="#" data-content="The beginning">Home</a></li>
+                <li><a href="#" data-content="Curious?">About</a></li>
+                <li><a href="#" data-content="I got game">Skills</a></li>
+                <li><a href="#" data-content="Only the finest">Works</a></li>
+                <li><a href="../accounts/logout/" data-content="Don't hesitate" class="button">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <section class="home">
+        <div class="open-overlay">
+            <span class="bar-top"></span>
+            <span class="bar-middle"></span>
+            <span class="bar-bottom"></span>
+        </div>
+    </section>
+
+{% block extended_head %}
+        <script src="{% static 'js/vendor/jquery.js' %} "></script> 
+   <script src="{% static 'js/vendor/what-input.js' %} "></script>
+ <!--<script src="js/vendor/foundation.js"></script>-->
+    <script src="{% static 'js/nav.js' %}"></script>
+        {% endblock %}

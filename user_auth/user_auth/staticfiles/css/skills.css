@@ -1,4 +1,10 @@
-#skillform{
-    max-height: 40vh;
+#id_skills{
+    max-height: 25vh;
     overflow-y: scroll;
+}
+#id_description{
+    height:80px;
+}
+#id_coordinates{
+    display:none;
 }

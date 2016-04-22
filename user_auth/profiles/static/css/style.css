@@ -1,16 +1,18 @@
 body{
-   background-image: linear-gradient( rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.66)), url('http://i.stack.imgur.com/QbYSz.png');
+   /*background-image: linear-gradient( rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.66)), url('http://i.stack.imgur.com/QbYSz.png');*/
 background-repeat: no-repeat;
 background-size: 100% 100%;
 color:#fff;
- font-family: 'Cardo', serif;
+font-family: 'Open Sans', sans-serif;
 /*text-align: center;*/
 }
 h1,h2,h3,h4,h5,h6{
-  font-family: 'Oswald', sans-serif;
+  color:#000;
+}
+p{
+  color: #838383;
 }
 .landing{
-    background-image: url('http://i.stack.imgur.com/QbYSz.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     /*background-color: #000;*/
@@ -28,19 +30,21 @@ h1,h2,h3,h4,h5,h6{
 .wrapper h1{
   text-transform:uppercase;
   text-decoration:underline;
-  font-family: 'Cardo', serif;
+  font-weight: 300;
+  font-family: 'Open Sans', sans-serif;
 }
 .wrapper p{
       text-align: center;
     font-size: 2em;
     text-transform: uppercase;
-    font-weight: bold;
-    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-family: 'Open Sans', sans-serif;
 }
 .wrapper p:nth-child(3){
       font-size: 1em;
       text-transform:Capitalize;
-      font-family: 'Cardo', serif;
+      font-family: 'Open Sans', sans-serif;
+      font-weight:600;
 }
 .wrapper{
    width: 55%;
@@ -189,9 +193,7 @@ h1,h2,h3,h4,h5,h6{
 .signup label{
     display:none;
 }
-.button{
-    background: #000;
-}
+
 
 .signup-panel p a{
     color: #000;
@@ -243,14 +245,16 @@ h1,h2,h3,h4,h5,h6{
 }
 /*Select User Type*/
 .select{
-        margin-top: 10%;
+         margin-top: 5%;
 }
 .usertype p{
-    font-size: 2em;
+font-size: 2em;
     text-align: center;
-        padding: 5%;
-    margin-top: 5%;
-    color:#fff;
+    padding: 5%;
+    margin-top: 23%;
+    color: #000;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
 }
 
 .div {
@@ -263,17 +267,20 @@ h1,h2,h3,h4,h5,h6{
 
 .logout{
   margin: 2% 5% 0%;
+  
 }
 .div-icon {
-z-index: 1000000000;
-    background: #E5E5E5;
-  border-radius: 50%;
-  display: table;
-  height: 100px;
-  margin: 0 auto;
-  width: 100px;
-  margin-top: -61px;
-  font-size: 3rem; }
+    z-index: 1000000000;
+    background: #fff;
+    border-radius: 50%;
+    display: table;
+    height: 100px;
+    margin: 0 auto;
+    width: 100px;
+    margin-top: -61px;
+    font-size: 3rem;
+    border: solid .005em #838383;
+}
   .div-icon span {
     color: #fff;
     display: table-cell;
@@ -286,12 +293,13 @@ z-index: 1000000000;
   font-size: 26px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #fff;}
+  font-family: 'Open Sans', sans-serif;}
 .info p {
-  color: #000;
-  font-size: 16px;
-  padding-top: 10px; 
-    color:#fff;
+font-size: 16px;
+    padding-top: 10px;
+    font-family: 'Open Sans', sans-serif;
+    color: #838383;
+    margin-top: 1%;
 }
 .info a {
   border-radius: 2px;
@@ -305,8 +313,8 @@ z-index: 1000000000;
     transition: all 0.5s ease 0s; }
 
 .button{
-    background-color: #fff;
-    color: #000;
+    background-color: #006ff3;
+    color: #fff;
 }
 
 .button: hover{
@@ -314,7 +322,7 @@ z-index: 1000000000;
     color: #000;
 }
 .aid{
-    border-right: .1em solid #fff;
+        border-right: .1em solid #838383;
 }
 .callout{
   background:none;
@@ -481,7 +489,6 @@ background-color: rgba(255, 255, 255, 0.33);
 /*  background: #FAFAFA; }*/
 
 .card {
-  font-family: 'Roboto', sans-serif;
   overflow: hidden;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   color: #272727;

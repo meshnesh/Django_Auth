@@ -18,6 +18,7 @@
   <p><a class="button profile_links" href="{% url 'browse' %}">Browse Opportunity</a></p>
   <p><a class="button profile_links" href="{% url 'commitments' %}">Commitments</a></p>
   <p><a class="button profile_links" href="">Community</a></p>
+  <div class="counter">{{ available.hours }} Hours Available,  {{ sum }} Hours Committed {{ complete }} Hours Completed</div>
 </div>
-<div class="counter"> count</div>
+
 {% endblock %}

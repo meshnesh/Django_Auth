@@ -1,9 +1,25 @@
 body{
-    /*background-image: linear-gradient( rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.65)), url('http://www.timeslive.co.za/incoming/2012/08/17/black_and_white_hands.jpg/ALTERNATES/crop_630x400/black_and_white_hands.jpg');*/
+   /*background-image: linear-gradient( rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.66)), url('http://i.stack.imgur.com/QbYSz.png');*/
+background-repeat: no-repeat;
+background-size: 100% 100%;
+color:#fff;
+font-family: 'Open Sans', sans-serif;
+/*text-align: center;*/
+}
+h1,h2,h3,h4,h5,h6{
+  color:#000;
+}
+p{
+  color: #838383;
+}
+.landing{
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    background-color: #000;
+    /*background-color: #000;*/
     overflow: hidden;
+    max-height: 100vh;
+    height: 100vh;
+    width: 100%;
        
 
 }
@@ -14,21 +30,25 @@ body{
 .wrapper h1{
   text-transform:uppercase;
   text-decoration:underline;
-  font-size: 1.4em;
+  font-weight: 300;
+  font-family: 'Open Sans', sans-serif;
 }
 .wrapper p{
       text-align: center;
     font-size: 2em;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: 400;
+    font-family: 'Open Sans', sans-serif;
 }
 .wrapper p:nth-child(3){
       font-size: 1em;
       text-transform:Capitalize;
+      font-family: 'Open Sans', sans-serif;
+      font-weight:600;
 }
 .wrapper{
    width: 55%;
-    margin: 10% auto;
+    margin: 15% auto;
     text-align: center;
 }
 .wrapper.form-success .container h1 {
@@ -145,7 +165,10 @@ body{
             transform: translateY(-700px) rotate(600deg);
   }
 }
-
+.ontop{
+    position: relative;
+    z-index: 1000;
+}
 /* SignUp style*/
 .signup_box{
     background-color: rgba(255, 255, 255, 0.33);
@@ -170,9 +193,7 @@ body{
 .signup label{
     display:none;
 }
-.button{
-    background: #000;
-}
+
 
 .signup-panel p a{
     color: #000;
@@ -242,7 +263,10 @@ body{
     z-index: 0;
 }
 
-
+.logout{
+  margin: 2% 5% 0%;
+  
+}
 .div-icon {
 z-index: 1000000000;
     background: #E5E5E5;
@@ -258,7 +282,9 @@ z-index: 1000000000;
     display: table-cell;
     text-align: center;
     vertical-align: middle; }
-
+.div-icon span img{
+  width: 70%;
+}
 .info h4 {
   font-size: 26px;
   letter-spacing: 2px;
@@ -282,8 +308,8 @@ z-index: 1000000000;
     transition: all 0.5s ease 0s; }
 
 .button{
-    background-color: #fff;
-    color: #000;
+    background-color: #006ff3;
+    color: #fff;
 }
 
 .button: hover{
@@ -293,7 +319,9 @@ z-index: 1000000000;
 .aid{
     border-right: .1em solid #fff;
 }
-
+.callout{
+  background:none;
+}
 /*Profile*/
 
 .container_profile {
@@ -386,3 +414,159 @@ z-index: 1000000000;
     background-color: #000;
     color: #fff;
 }
+
+.details{
+  background-color: white;
+  color: white;
+}
+/*volunter_form*/
+.volunter_form{
+  background-color: rgba(255, 255, 255, 0.33);
+  margin-top: 3%;
+  text-align: center;
+  border: .01em solid beige;
+  border-radius: .2em;
+  margin-left: 30%;
+  height: 90vh;
+}
+.volunter_date{
+  width:500px;padding:0;background-color:rgba(255, 255, 255, 0.33);top: 50%;transform: translateY(-50%);position: relative;padding:10px;
+  border: .01em solid beige;
+  border-radius: .2em;
+  
+}
+/*request help*/
+.create{
+background: rgba(255, 255, 255, 0.32);
+    width: 88%;
+    border: .01em solid beige;
+    border-radius: .2em;
+    height: 100vh;
+    margin: 0% 7% 0%;
+    padding: 2% 2%;
+    color: #fff;
+  
+}
+.create label{
+      color: #fff;
+}
+/*skills*/
+.skill{
+      width: 20%;
+    margin: 1%;
+    padding: 1%;
+    height: 5.5vh;
+
+}
+.checkbox li{
+      width: 50%;
+    float: left;
+    list-style: none;
+    text-align:left;
+}
+li label{
+    color:#fff;
+}
+.skills_form{
+background-color: rgba(255, 255, 255, 0.33);
+    border: .01em solid beige;
+    border-radius: .2em;
+    /* margin-left: 30%; */
+    height: 100vh;
+    text-align: center;
+    /* margin-top: 2%; */
+    padding-top: 6%;
+  
+}
+/*browse*/
+/*@import url(//fonts.googleapis.com/css?family=Roboto:400,500,300,100,700,900);*/
+/*html, body {*/
+/*  background: #FAFAFA; }*/
+
+.card {
+  overflow: hidden;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  color: #272727;
+  border-radius: 2px; 
+  background: rgba(240, 236, 236, 0.91);
+      /*height: 60vh;*/
+      margin-bottom: 15%;
+      /*max-height:60vh;*/
+
+}
+  .card .title {
+    line-height: 3rem;
+    font-size: 1.5rem;
+    font-weight: 300; }
+  .card .content {
+    padding: 1.3rem;
+    font-weight: 300;
+    border-radius: 0 0 2px 2px; 
+    /*height: 77%;*/
+  }
+  .card p {
+    margin: 0; }
+  .card .action {
+        border-top: 1px solid rgba(160, 160, 160, 0.2);
+    padding: .9rem .5rem .1rem;}
+  .card a {
+    margin-right: 1.3rem;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+    text-decoration: none; 
+        color: #000;
+  }
+  .card .image {
+    position: relative; }
+    .card .image .title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      padding: 1.3rem;
+      color: #fff; }
+    .card .image img {
+      border-radius: 2px 2px 0 0; }
+
+.browse_bg{
+  background: #000;
+  min-height:100%;
+  width:100%;
+}
+/*individual opportunity*/
+.opp{
+  color:#000;
+}
+
+.header.panel {
+  color:#fff;
+  background-color: rgba(255, 255, 255, 0.33);
+  margin-top: 25%;
+  text-align: center;
+  border: .01em solid beige;
+  border-radius: .2em;}
+  .header.panel p {
+    font: 1rem "Avenir Next";
+    padding: 1rem 2rem 2rem 2rem;
+    margin-top: -1.25rem; }
+.header.panel p span {
+   text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #fff; }
+  .header.panel .sign {
+    background: #fff;
+    width: 150px;
+    height: 2.4rem;
+    border: 2px solid #444;
+    position: relative;
+    top: -2.5rem;
+    margin: auto; }
+    .header.panel .sign h6 {
+      text-transform: uppercase;
+      font: bolder 0.875rem "Avenir Next";
+      letter-spacing: 3px;
+      color: #666;
+      font-size: 70%;
+      text-align: center;
+      line-height: 2rem; }

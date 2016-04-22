@@ -5,8 +5,8 @@
 
         var location_map;
 
-        var location_coordinate = parent.find('#id_location');
-        var address = parent.find('#id_city');
+        var location_coordinate = parent.find('#id_coordinates');
+        var address = parent.find('#id_location');
 
         function savePosition(point)
         {

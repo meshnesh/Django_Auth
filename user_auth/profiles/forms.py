@@ -90,3 +90,12 @@ class addForm(forms.ModelForm):
         }
         
 #############################################################################
+
+
+# image
+
+class DocumentForm(forms.Form):
+    docfile = forms.FileField(
+        label='Select an image'
+    )
+ 

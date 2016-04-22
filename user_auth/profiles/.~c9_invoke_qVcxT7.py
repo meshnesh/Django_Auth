@@ -15,7 +15,7 @@ from .models import SimplePlace, Create_opportunity, RequestApplication, Dated
 from .forms import SingleSkillForm, PlacedForm, SkillsForm, DateForm, addForm, ApplyForm
 from datetime import timedelta, datetime, time
 from django.db import transaction
-from django.conf import settings
+from django.co
 from django.contrib.auth.models import User
 from django.core import mail
 from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
@@ -91,37 +91,6 @@ def browseOpportunity(request):
 	return render(request, template, context)	
 	
 	
-# def post_list(request):
-# 	today = timezone.now().date()
-# 	queryset_list = Post.objects.active()#.order_by("-timestamp")
-# 	if request.user.is_staff or request.user.is_superuser:
-# 		queryset_list = Post.objects.all()
-
-# 	query = request.GET.get("q")
-# 	if query:
-# 		queryset_list = queryset_list.filter(title__icontains=query)
-
-# 	paginator = Paginator(queryset_list, 5) # Show 5 contacts per page
-# 	page_request_var = "abc"
-# 	page = request.GET.get(page_request_var)
-# 	try:
-# 		queryset = paginator.page(page)
-# 	except PageNotAnInteger:
-# 	# If page is not an integer, deliver first page.
-# 		queryset = paginator.page(1)
-# 	except EmptyPage:
-# 	# If page is out of range (e.g. 9999), deliver last page of results.
-# 		queryset = paginator.page(paginator.num_pages)
-
-# 	context = {
-# 		"object_list": queryset,
-# 		"title": "List",
-# 		"page_request_var": page_request_var,
-# 		"today": today,
-# 		}
-		
-# 	return render(request, "post_list.html", context)	
-#############################################################################
 # Chris Kiilu
 def location(request):
 	# coordinates page view
