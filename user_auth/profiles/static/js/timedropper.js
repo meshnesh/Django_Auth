@@ -15,7 +15,7 @@
                 _td_options = $.extend({
 
                     format: 'HH:mm:00',
-                    autoswitch: false,
+                    autoswitch: true,
                     meridians: false,
                     mousewheel: false,
                     setCurrentTime: true,

@@ -53,15 +53,6 @@ class DateForm(forms.ModelForm):
 			'class': 'datepicker'
 			})
 		}
-class ApplyForm(forms.ModelForm):
-	class Meta:
-		model = RequestApplication
-		fields = [
-		'application'
-		]
-		widgets = {
-		'application': forms.RadioSelect
-		}
 		
 #########################################################################
 #frank

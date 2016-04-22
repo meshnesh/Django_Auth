@@ -21,10 +21,8 @@
 			Skill Set needed:{{ skill }}
 	  	{% endfor %}
 	  	</p>
-	  <form class = "small-centered input" method="POST" action="" style="width:500px; ">
-	      {% csrf_token %}
-        {{ form.application }}
-    <input type="submit" class="button" value="Apply For Job" save />
+	  <form method="GET" action="" class="column small-12">
+    <input class="button" type="submit" name="subb" value="{{ sub_value }} " />
     </form>
     </div>
   

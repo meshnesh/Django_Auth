@@ -12,33 +12,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator
 # Create your models here.
-# Create your models here.
-class profile(models.Model):
-	name = models.CharField(max_length = 1200)
-	description = models.TextField(default = 'description default')
-	
-	def __unicode__(self):
-		return self.name
-		
-		
-		
-# class Opportunity(models.Model):
-# 	user = models.ForeignKey(
-# 	    settings.AUTH_USER_MODEL,
-# 	    on_delete=models.CASCADE,
-# 	    )
-# 	title = models.CharField(max_length=120)
-# 	image = models.ImageField(null=True, blank=True)
-# 	description = models.TextField()
-# 	timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
-	
-	
-# 	def __str__(self):
-# 		return self.title
-
-
-# 	def __unicode__(self):
-# 		return self.title
 #===============================================
 # Kiilu
 class Skills(models.Model):
@@ -104,7 +77,7 @@ class Create_opportunity(models.Model):
     coordinates = PlainLocationField(based_fields=['location'], zoom=7)
     description = models.TextField(null=True)
     skills = models.ManyToManyField(Skills)
-    hours_required = models.CharField(max_length=140, blank = True)
+    hours_required = models.IntegerField(default=0)
     starting_time = models.TimeField()
     stopping_time = models.TimeField()
     starting_date = models.DateField()
@@ -117,14 +90,16 @@ class Create_opportunity(models.Model):
         return self.title
 
     def __str__(self):
-        return self.title + ": " + self.hours_required
+        return self.title
     
     def get_absolute_url(self):
         return reverse('single_request', kwargs={'id': self.id})
     def get_absolute_helper_url(self):
         return reverse('helper_request', kwargs={'id': self.id})
     def get_absolute_chat_url(self):
-        return reverse('chat:new_room', kwargs={'id': self.id})
+        return reverse('chat:new_room', kwargs={'id': self.id})    
+    def get_absolute_commit_url(self):
+        return reverse('single_commitment', kwargs={'id':self.id})
         
 ##################################################################################################################################
 class RequestApplication(models.Model):
@@ -132,10 +107,22 @@ class RequestApplication(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
         )
-    requests = models.OneToOneField(
+    requests = models.ForeignKey(
         Create_opportunity,
         on_delete=models.CASCADE)
-    application = models.BooleanField()
+
+    def __unicode__(self):
+        return str(self.user) + ": " + str(self.requests)
+
+class AcceptedRequests(models.Model):
+    user =  models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+        )
+    requests = models.ForeignKey(
+        Create_opportunity,
+        on_delete=models.CASCADE) 
+
 
     def __unicode__(self):
         return str(self.user) + ": " + str(self.requests)

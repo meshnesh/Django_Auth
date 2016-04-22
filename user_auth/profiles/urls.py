@@ -17,9 +17,9 @@ urlpatterns = [
         url(r'^create/$', views.create_opportunity_form, name = "create"),
         url(r'^browse/$', views.browse, name = "browse"),
         url(r'^commitments/$', views.commitments, name = "commitments"),
+        url(r'^commitments/(?P<id>[0-9]+)/$', views.single_commitment, name = "single_commitment"),
         url(r'current/$', views.current_opportunities, name="current_opportunities"),
         url(r'browse/opportunity/(?P<id>[0-9]+)/$', views.helper_request, name="helper_request"),
-        url(r'opportunity/(?P<id>[0-9]+)/$', views.single_request, name="single_request"),
-        url(r'profile/$', views.view_profile, name="profile"),
-
+        url(r'current/opportunity/(?P<id>[0-9]+)/$', views.single_request, name="single_request"),
+        url(r'profile/(?P<username>[\w]+)/$', views.view_profile, name="profile"),
         ]

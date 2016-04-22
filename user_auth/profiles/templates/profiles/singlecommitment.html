@@ -2,9 +2,8 @@
 {% load staticfiles %}
 
 {% block content %}
-<div class="browse_bg">
 <div class="callout clearfix">
-  <a class="button float-left" href="{% url 'current_opportunities' %}" >Back</a>
+  <a class="button float-left" href="{% url 'commitments' %}" >Back</a>
   <a class="button float-right" href="../../../accounts/logout/" >Logout</a>
 </div>
 
@@ -22,13 +21,10 @@
 			Skill Set needed:{{ skill }}
 	  	{% endfor %}
 	  	</p>
-	  	<h6>Pending Offers</h6>
-      {% for user in offers %}
-      <a href="{% url 'profile' user.username %}"><p>{{ user.username }}</p></a>
-      {% endfor %}
     </div>
   
   </div>
 </div>
+<script type="text/javascript" src="{% static 'js/submit_button.js' %}"></script>
 {% endblock %}
 

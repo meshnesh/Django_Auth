@@ -1,27 +1,15 @@
+{% extends 'base.html' %}
 {% load staticfiles %}
-<!doctype html>
-<html class="no-js" lang="en">
-
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User profile</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.1.2/foundation.min.css">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
-    <!--<link rel="stylesheet" href="css/foundation.css" />-->
-    
-</head>
+{% block content %}
 <div class="card">
     <header>
         <h1>{{ user.username }}</h1>
         <h2>Pet, dog and animal</h2>
-        <a href="#"><img src="/img/user.jpg" alt="" target="_blank" class="avatar"></a>
+        <!-- <a href="#"><img src="/img/user.jpg" alt="" target="_blank" class="avatar"></a> -->
 
     </header>
     <article>
-        <p>Tommy is a dog, he likes bones, sleeping and backend doggy.</p>
+        <p>{{ user.get_full_name }} is a dog, he likes bones, sleeping and backend doggy.</p>
         <div class="row medium-uncollapse large-collapse">
             <ul class="list-unstyled">
                 <div class="small-6 columns">
@@ -45,16 +33,11 @@
 
     <footer>
 
-        <!--
-        <ul class="list-unstyled">
-    <li><a href="https://twitter.com/"><i class="fa fa-fw fa-twitter"></i> Twitter</a></li>
-    <li><a href="https://github.com/"><i class="fa fa-fw fa-github"></i> Github</a></li>
-    <li><a href="http://codepen.io/jasper"><i class="fa fa-fw fa-codepen"></i> Codepen</a></li>
-</ul>
--->
-        <hr>
-        <a class="tiny button" href="#">Accept</a>
-        <p class="cf">
+   <hr>
+   <form method="GET" action="" class="column small-12">
+    <input type="submit" name="save" value="Save Items" />
+    <input type="submit" name="delete" value="Delete Items" />
+    </form>
             <small>
       <a class="align-left share" href="#"><i class="fa fa-fw fa-share"></i> share</a>
       <a href="#" class="align-right alert">report <i class="fa fa-fw fa-exclamation"></i></a>
@@ -63,15 +46,5 @@
         </p>
     </footer>
 </div>
-<!--end card-->
-
-
-<!--
-<footer class="closure">
-    <p>Written by <a href="https://twitter.com/tweemeterstudio" target="_blank">Tommy newtime</a>.
-        <br><em>Like Tommy? Good!</em></p>
-</footer>
--->
-
-</html>
-
+<script type="text/javascript" src="{% static 'js/submit_button.js' %}"></script>
+{% endblock %}

@@ -9,7 +9,9 @@ from django.utils.text import slugify
 
 from django.db.models import Q
 
-from profiles.models import Create_opportunity
+from django.core.cache import cache
+
+from profiles.models import Create_opportunity, AcceptedRequests
 # def view_rooms(request):
 #     rooms = Room.objects.all()
 #     context = {
@@ -21,25 +23,41 @@ def view_rooms(request):
     show_items = Create_opportunity.objects.filter(
 		Q(user__exact=request.user.id)
 		)
+    cache.set('url', request.path, 600)
     context = {
         'show_items': show_items
     }
     return render(request, 'chat/browse.html', context)
 
+def volunteer_view_rooms(request):
+    queryset = AcceptedRequests.objects.values('requests_id').filter(
+        Q(user__exact=request.user.id)
+        )
+    cache.set('url', request.path, 600)
+    current = Create_opportunity.objects.filter(id__in=queryset)
+    context = {
+        'show_items': current,
+    }
+    return render(request, 'chat/browse.1.html', context)
+
 def new_room(request, id=None):
     """
     create a new room(if does not exist), and redirect to it.
     """
-    opportunity = get_object_or_404(Create_opportunity, id=id)
+    if cache.get('url') == '/chat/rooms/':
+        opportunity = get_object_or_404(Create_opportunity, id=id)
+    else:
+        opportunity = get_object_or_404(AcceptedRequests, id=id).requests
     new_room = None
+    print "opportunity", opportunity.title
     label = slugify(opportunity.title)
     print label
     while not new_room:
-        with transaction.atomic():
-            if Room.objects.filter(label=label).exists():
-                continue
-            else:
-                new_room = Room.objects.create(label=label)
+        if not Room.objects.filter(label=label).exists():
+            new_room = Room.objects.create(label=label)
+        else:
+            new_room = Room.objects.get(label=label)
+
     return redirect('/chat/' + label, label=label)
 
 def chat_room(request, label):

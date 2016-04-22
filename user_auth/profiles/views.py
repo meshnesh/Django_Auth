@@ -8,21 +8,22 @@ from django.contrib import messages
 
 
 
-# Kiilu imports and nigger
+# Kiilu imports
 # Rendering views
 
-from .models import SimplePlace, Create_opportunity, RequestApplication, Dated
-from .forms import SingleSkillForm, PlacedForm, SkillsForm, DateForm, addForm, ApplyForm
+from .models import SimplePlace, Create_opportunity, RequestApplication, AcceptedRequests, Dated
+from .forms import SingleSkillForm, PlacedForm, SkillsForm, DateForm, addForm
 from datetime import timedelta, datetime, time
 from django.db import transaction
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import mail
 from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
 from django.template import Context, Template, RequestContext
 from smtplib import SMTPRecipientsRefused
 import vobject
+from django.core.urlresolvers import reverse, get_script_prefix
 from email.mime.text import MIMEText
+from django.core.cache import cache
 
 # Math class
 import math
@@ -91,36 +92,6 @@ def browseOpportunity(request):
 	return render(request, template, context)	
 	
 	
-# def post_list(request):
-# 	today = timezone.now().date()
-# 	queryset_list = Post.objects.active()#.order_by("-timestamp")
-# 	if request.user.is_staff or request.user.is_superuser:
-# 		queryset_list = Post.objects.all()
-
-# 	query = request.GET.get("q")
-# 	if query:
-# 		queryset_list = queryset_list.filter(title__icontains=query)
-
-# 	paginator = Paginator(queryset_list, 5) # Show 5 contacts per page
-# 	page_request_var = "abc"
-# 	page = request.GET.get(page_request_var)
-# 	try:
-# 		queryset = paginator.page(page)
-# 	except PageNotAnInteger:
-# 	# If page is not an integer, deliver first page.
-# 		queryset = paginator.page(1)
-# 	except EmptyPage:
-# 	# If page is out of range (e.g. 9999), deliver last page of results.
-# 		queryset = paginator.page(paginator.num_pages)
-
-# 	context = {
-# 		"object_list": queryset,
-# 		"title": "List",
-# 		"page_request_var": page_request_var,
-# 		"today": today,
-# 		}
-		
-# 	return render(request, "post_list.html", context)	
 #############################################################################
 # Chris Kiilu
 def location(request):
@@ -242,7 +213,7 @@ def single_request(request, id=None):
 	offers = User.objects.values().filter(
 		Q(id__in=current_ids)
 		)
-	print offers
+	request.session['opportunity_id'] = opportunity.id
 	context = {
 		'opportunity':opportunity,
 		'offers':offers,
@@ -267,17 +238,21 @@ def ical(dtstart, dtend, summary, path):
 	part.add_header('Content-Disposition','attachment; filename=request.ics') 
 	return part
 
+
 def helper_request(request, id=None):
-	print request.user
 	opportunity = get_object_or_404(Create_opportunity, id = id)
-	if not RequestApplication.objects.filter(requests=opportunity).exists():
-		form = ApplyForm(data = request.POST or None)
-		if form.is_valid():
-			instance = form.save(commit=False)
-			instance.user = request.user
-			instance.requests = opportunity
-			print "Obj not exist"
-			instance.save()
+	if not RequestApplication.objects.filter(
+		Q(requests__exact=opportunity)&
+		Q(user__exact=request.user)
+		).exists():
+		sub_value = "Apply for Job"
+		if request.GET.get('subb'):
+			print request.user
+			print opportunity
+			RequestApplication.objects.create(
+				user=request.user, 
+				requests=opportunity,
+				)
 			message_body = "This is an notification for a job involving:\n" + opportunity.description +\
 				"\nThe job requires the following skills: " + ", ".join([skill['skill'] for skill in opportunity.skills.values('skill')]) 
 				
@@ -306,29 +281,34 @@ def helper_request(request, id=None):
 			except AssertionError:
 				print("Whaaat! AssertionError!")
 			msg.send()
-		else:
-			form = ApplyForm()
-			print "Obj not exist, form invalid"
+			return redirect(reverse('helper_request', kwargs={'id': opportunity.id}))
 	else:
-		form = ApplyForm(data = request.POST or None, instance=opportunity)		
-		current_request = RequestApplication.objects.get(requests=opportunity).application
-		if form.is_valid():
-			instance = form.save(commit=False)
-			instance.save()
-			print "Obj exists"
-		else:
-			form = ApplyForm()
-			print "Obj exists, form invalid"
-		RequestApplication.objects.get(requests=opportunity).delete()
+		current_request = RequestApplication.objects.get(requests=opportunity, user=request.user)
+		sub_value = "Already Applied"
+		if request.GET.get('subb'):
+			RequestApplication.objects.get(
+				user=request.user,
+				requests=opportunity,
+				).delete()
+			if AcceptedRequests.objects.filter(
+				Q(requests__exact=opportunity)&
+				Q(user__exact=request.user)
+				).exists():
+				AcceptedRequests.objects.get(
+				user=request.user,
+				requests=opportunity,
+				).delete()
+			return redirect(reverse('helper_request', kwargs={'id': opportunity.id}))
 	
-	print opportunity.title
+	
 	context = {
 		'opportunity':opportunity,
-		'form': form,
+		'sub_value': sub_value,
 	}
 	return render(request, 'profiles/browseOpportunity.html', context)
+
 def commitments(request):
-	current_ids = RequestApplication.objects.values('requests_id').filter(
+	current_ids = AcceptedRequests.objects.values('requests_id').filter(
 		Q(user__exact=request.user.id)
 		)
 	current = Create_opportunity.objects.filter(id__in=current_ids)
@@ -337,6 +317,13 @@ def commitments(request):
 		'current':current,
 	}
 	return render(request, 'profiles/commitments.html', context)
+
+def single_commitment(request, id=None):
+	queryset = get_object_or_404(AcceptedRequests, id=id)
+	context = {
+		'opportunity':queryset.requests,
+	}
+	return render(request, 'profiles/singlecommitment.html', context)
 
 #############################################################
 #frank
@@ -354,6 +341,7 @@ def create_opportunity_form(request):
         
         return redirect('/seeker/')
     else:
+    	print( [ (field.label, field.errors) for field in form] )
     	print("Form invalid")
     context = {
         'form' : form
@@ -367,17 +355,26 @@ def browse(request):
     }
     return render(request, 'profiles/browse.html', context)
     
-def view_profile(request):
-	# name = user.username
-	location = SimplePlace.objects.get(user=request.user.id).location
-	current = Create_opportunity.objects.filter(
-		Q(user__exact=request.user.id) &
-		Q(stopping_date__gt=timezone.now()) &
-		Q(starting_date__lte=timezone.now() + timedelta(days=30))
-	)
+def view_profile(request, username=None):
+	previous_page = request.session.get('opportunity_id', "Why")
+	user = get_object_or_404(User, username=username)
+	location = SimplePlace.objects.get(user=user).location
+	current = Create_opportunity.objects.get(id=previous_page)
+	print "casdfghj", current
+	rekit = RequestApplication.objects.filter(
+		Q(user__exact=user)&
+		Q(requests_id__exact=previous_page)
+		).all()
+	print rekit
+	if request.GET.get('delete'):
+		rekit.delete()
+		return redirect(reverse('single_request', kwargs={"id": previous_page}))
+	elif request.GET.get('save'):
+		AcceptedRequests.objects.create(user=user, requests=current)
+		return redirect('seeker')
 
 	context={
-		# 'user':name,
+		'user':user,
 		'location': location,
 		'current': current,
 
