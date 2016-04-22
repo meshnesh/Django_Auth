@@ -14,7 +14,7 @@
                 _td_event = null,
                 _td_options = $.extend({
 
-                    format: 'h:mm a',
+                    format: 'HH:mm:00',
                     autoswitch: false,
                     meridians: false,
                     mousewheel: false,

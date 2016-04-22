@@ -2,6 +2,9 @@
     max-height: 25vh;
     overflow-y: scroll;
 }
+.create label, li label{
+    color: #000;
+}
 #id_description{
     height:80px;
 }

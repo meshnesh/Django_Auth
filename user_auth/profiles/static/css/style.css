@@ -5,6 +5,7 @@ background-size: 100% 100%;
 color:#fff;
 font-family: 'Open Sans', sans-serif;
 /*text-align: center;*/
+ /*background-image: linear-gradient( rgba(0, 111, 243, 0.48), rgba(0, 111, 243, 0.25)) ,url('../img/timebg.png');*/
 }
 h1,h2,h3,h4,h5,h6{
   color:#000;
@@ -20,6 +21,7 @@ p{
     max-height: 100vh;
     height: 100vh;
     width: 100%;
+    background-image: linear-gradient( rgba(0, 111, 243, 0.48), rgba(0, 111, 243, 0.25)) ,url('../img/timebg.png');
        
 
 }
@@ -30,8 +32,9 @@ p{
 .wrapper h1{
   text-transform:uppercase;
   text-decoration:underline;
-  font-weight: 300;
+  font-weight: 700;
   font-family: 'Open Sans', sans-serif;
+  color: #fff;
 }
 .wrapper p{
       text-align: center;
@@ -39,12 +42,14 @@ p{
     text-transform: uppercase;
     font-weight: 400;
     font-family: 'Open Sans', sans-serif;
+    color: #fff;
 }
 .wrapper p:nth-child(3){
       font-size: 1em;
       text-transform:Capitalize;
       font-family: 'Open Sans', sans-serif;
       font-weight:600;
+      color: #fff;
 }
 .wrapper{
    width: 55%;
@@ -293,7 +298,9 @@ font-size: 2em;
   font-size: 26px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  font-family: 'Open Sans', sans-serif;}
+  font-family: 'Open Sans', sans-serif;
+  border-radius: .3em;
+}
 .info p {
 font-size: 16px;
     padding-top: 10px;
@@ -315,6 +322,7 @@ font-size: 16px;
 .button{
     background-color: #006ff3;
     color: #fff;
+    border-radius: .3em;
 }
 
 .button: hover{
@@ -416,10 +424,11 @@ font-size: 16px;
 }
 
 .profile_links{
-    background-color: #000;
     color: #fff;
 }
-
+.quiet{
+  display:none;
+}
 .details{
   background-color: white;
   color: white;
@@ -453,7 +462,7 @@ background: rgba(255, 255, 255, 0.32);
   
 }
 .create label{
-      color: #fff;
+      color: 838383;
 }
 /*skills*/
 .skill{
@@ -533,7 +542,6 @@ background-color: rgba(255, 255, 255, 0.33);
       border-radius: 2px 2px 0 0; }
 
 .browse_bg{
-  background: #000;
   min-height:100%;
   width:100%;
 }
