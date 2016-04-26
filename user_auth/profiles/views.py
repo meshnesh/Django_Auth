@@ -1,54 +1,61 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
-from urllib import quote_plus
-from django.contrib import messages
-
-
-
-# Kiilu imports
-# Rendering views
-
-from .models import SimplePlace, Create_opportunity, RequestApplication, AcceptedRequests, Dated
-from .forms import SingleSkillForm, PlacedForm, SkillsForm, DateForm, addForm
 from datetime import timedelta, datetime, time
-from django.db import transaction
+
+from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import mail
-from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
-from django.template import Context, Template, RequestContext
-from smtplib import SMTPRecipientsRefused
-import vobject
-from django.core.urlresolvers import reverse, get_script_prefix
-from email.mime.text import MIMEText
 from django.core.cache import cache
-
-# Math class
-import math
-
+from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
+from django.core.urlresolvers import reverse, get_script_prefix
+from django.db import transaction
 from django.db.models import Q
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template import Context, Template, RequestContext
+from django.utils import timezone
+
+from allauth.account.decorators import verified_email_required
+from email.mime.text import MIMEText
+from smtplib import SMTPRecipientsRefused
+from urllib import quote_plus
+
+from .custom_funcs import ical, calc_dist
+from .models import SimplePlace, Create_opportunity, RequestApplication, AcceptedRequests, Dated, Willing_Hour
+from .forms import SingleSkillForm, PlacedForm, SkillsForm, DateForm, addForm, HourForm
 
 
 # Create your views here.
 def index(request):
+	"""
+	Landing page view.
+	"""
 	context = {}
 	template = 'profiles/index.html'
 	return render(request, template, context)
+
 	
 def usertype(request):
+	"""
+	Selecting user type page view.
+	"""
 	context = {}
 	template = 'profiles/usertype.html'
 	return render(request, template, context)
 
 def seeker(request):
+	"""
+	Help seeker's profile.
+	"""
 	context = {}
 	template = 'profiles/seekerProfile.html'
 	return render(request, template, context)
 	
 
 def helper(request):
+	"""
+	Volunteer's profile.
+	"""
 #begin available hours	
 	available = Dated.objects.filter(
 		Q(user__exact=request.user.id)
@@ -136,6 +143,7 @@ def skills(request):
 	form = SkillsForm(data = request.POST)	
 	singleskill = SingleSkillForm(data=request.POST)
 	query = request.GET.get("q")
+
 	if query:
 		form.fields['skills'].queryset = form.fields['skills'].queryset.filter(Q(skill__icontains=query))
 		
@@ -162,39 +170,27 @@ def skills(request):
 
 def days(request):
 	date = DateForm(data = request.POST)
+
+	hour_form = HourForm(data=request.POST)
+	if hour_form.is_valid():
+		ins = hour_form.save(commit=False)
+		ins.user = request.user
+		ins.save()
+		return redirect('skills')
+	else:
+		hour_form = HourForm()
+
 	if date.is_valid():
 		instance = date.save(commit=False)
 		instance.user = request.user
 		instance.save()
-		return redirect('skills')
 	context = {
 		'date': date,
+		'hour_form': hour_form,
 	}
 	return render(request, "project/days.html", context)
 	
-def calc_dist(lat1, lon1, lat2, lon2):
-	'''a function to calculate the distance in miles between two 
-	points on the earth, given their latitudes and longitudes in degrees'''
 
-
-	# covert degrees to radians
-	lat1 = math.radians(lat1)
-	lon1 = math.radians(lon1)
-	lat2 = math.radians(lat2)
-	lon2 = math.radians(lon2) 
-
-	# get the differences
-	delta_lat = lat2 - lat1 
-	delta_lon = lon2 - lon1 
-
-	# Haversine formula, 
-	# from http://www.movable-type.co.uk/scripts/latlong.html
-	a = ((math.sin(delta_lat/2))**2) + math.cos(lat1)*math.cos(lat2)*((math.sin(delta_lon/2))**2) 
-	c = 2 * math.atan2(a**0.5, (1-a)**0.5)
-	# earth's radius in km
-	earth_radius = 6371
-	# return distance in miles
-	return earth_radius * c
 
 def current_opportunities(request):
 	current = Create_opportunity.objects.filter(
@@ -206,6 +202,24 @@ def current_opportunities(request):
 		'current':current,
 	}
 	return render(request, 'profiles/current_opportunities.html', context)
+
+def past_opportunities(request):
+	current = Create_opportunity.objects.filter(
+		Q(user__exact=request.user.id)&
+		Q(stopping_date__lt=timezone.now())
+		)
+	context = {
+		'current':current,
+	}
+	return render(request, 'profiles/past_opportunities.html', context)
+
+def single_past_request(request, id=None):
+	opportunity = get_object_or_404(Create_opportunity, id = id)
+	request.session['opportunity_id'] = opportunity.id
+	context = {
+		'opportunity':opportunity
+	}
+	return render(request, 'profiles/single_past_request.html', context)
 	
 def single_request(request, id=None):
 	opportunity = get_object_or_404(Create_opportunity, id = id)
@@ -219,24 +233,6 @@ def single_request(request, id=None):
 		'offers':offers,
 	}
 	return render(request, 'profiles/single_request.html', context)
-
-
-def ical(dtstart, dtend, summary, path):
-	cal = vobject.iCalendar()
-	cal.add('method').value = 'PUBLISH'  # IE/Outlook needs this
-
-	vevent = cal.add('vevent')
-	vevent.add('dtstart').value = dtstart
-	vevent.add('dtend').value = dtend
-	vevent.add('summary').value = summary
-	vevent.add('uid').value = path
-	vevent.add('dtstamp').value = datetime.now()
-
-	icalstream = cal.serialize()
-	part = MIMEText(icalstream,'calendar')
-	part.add_header('Filename','request.ics') 
-	part.add_header('Content-Disposition','attachment; filename=request.ics') 
-	return part
 
 
 def helper_request(request, id=None):
@@ -308,22 +304,63 @@ def helper_request(request, id=None):
 	return render(request, 'profiles/browseOpportunity.html', context)
 
 def commitments(request):
-	current_ids = AcceptedRequests.objects.values('requests_id').filter(
-		Q(user__exact=request.user.id)
+	current = AcceptedRequests.objects.filter(
+		Q(user__exact=request.user.id)&
+		Q(requests__stopping_date__gt=timezone.now())
 		)
-	current = Create_opportunity.objects.filter(id__in=current_ids)
 	print current
 	context = {
 		'current':current,
 	}
 	return render(request, 'profiles/commitments.html', context)
 
-def single_commitment(request, id=None):
+def helper_history(request):
+	current = AcceptedRequests.objects.filter(
+		Q(user__exact=request.user.id)&
+		Q(requests__stopping_date__lt=timezone.now())
+		)
+	print current
+	context = {
+		'current':current,
+	}
+	return render(request, 'profiles/helper_history.html', context)
+
+def helper_history_item(request, id=None):
 	queryset = get_object_or_404(AcceptedRequests, id=id)
 	context = {
 		'opportunity':queryset.requests,
 	}
+	return render(request, 'profiles/helper_history_item.html', context)
+
+def single_commitment(request, id=None):
+	queryset = get_object_or_404(AcceptedRequests, id=id)
+	if request.GET.get('subb'):
+		queryset.delete()
+		return redirect('commitments')
+	context = {
+		'opportunity':queryset.requests,
+	}
 	return render(request, 'profiles/singlecommitment.html', context)
+
+def revive_opportunity(request, id=None):
+	previous_page = request.session.get('opportunity_id', "Why")
+	current = get_object_or_404(Create_opportunity, id=id)
+	form = addForm(request.POST or None, request.FILES or None, instance=current)
+	if request.method == 'POST':
+		if form.is_valid():
+			instance = form.save(commit = False)
+	        instance.user = request.user
+	        print form.cleaned_data.get("description")
+	        instance.save()
+	        print form.cleaned_data.get("skills")
+	        form.save_m2m()
+	        
+	        return redirect(reverse('past_opportunities'))
+
+	context = {
+		'form' : form,
+	}
+	return render(request, 'profiles/create_opportunity.html', context)
 
 #############################################################
 #frank
@@ -348,12 +385,24 @@ def create_opportunity_form(request):
     }
     return render(request, 'profiles/create_opportunity.html', context)
     
-def browse(request):	
-    show_items = Create_opportunity.objects.order_by('-created_date')
-    context = {
-        'show_items': show_items
-    }
-    return render(request, 'profiles/browse.html', context)
+def browse(request):
+	accepted_ids = AcceptedRequests.objects.values('requests_id').filter(
+		Q(user__exact=request.user.id)
+		)
+	requested_ids = RequestApplication.objects.values('requests_id').filter(
+		Q(user__exact=request.user.id)
+		)		
+	print requested_ids
+	show_items = Create_opportunity.objects.exclude(
+		Q(id__in=accepted_ids)|
+		Q(id__in=requested_ids)		
+		).filter(
+		stopping_date__gt=timezone.now()
+		).order_by('-created_date')
+	context = {
+		'show_items': show_items
+	}
+	return render(request, 'profiles/browse.html', context)
     
 def view_profile(request, username=None):
 	previous_page = request.session.get('opportunity_id', "Why")
@@ -371,6 +420,7 @@ def view_profile(request, username=None):
 		return redirect(reverse('single_request', kwargs={"id": previous_page}))
 	elif request.GET.get('save'):
 		AcceptedRequests.objects.create(user=user, requests=current)
+		rekit.delete()
 		return redirect('seeker')
 
 	context={

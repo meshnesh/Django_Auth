@@ -4,7 +4,7 @@
 {% block content %}
 <div class="browse_bg">
 <div class="callout clearfix">
-  <a class="button float-left" href="{% url 'helper' %}" >> Back</a>
+  <a class="button float-left" href="{% url 'seeker' %}" >> Back</a>
   <a class="button float-right" href="../accounts/logout/" >Logout</a>
 </div>
 
@@ -24,7 +24,7 @@
         <!--<p>{{ item.description}}</p>-->
       </div>
       <div class="action">
-        <a href='{% url "single_commitment" item.id %}' class="button">View More</a>
+        <a href='{{ item.get_absolute_past_url }}' class="button">View More</a>
       </div>
     </div>
     <!--<a href="{{ item.get_absolute_url }}"><h3> {{ item.title }}</h3></a>-->

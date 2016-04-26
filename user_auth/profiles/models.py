@@ -1,16 +1,15 @@
 from __future__ import unicode_literals
 
-from django.db import models
-from django.utils import timezone
-from django.db.models.signals import pre_save
 from django.conf import settings
-
-# Kiilus imports
 from django.core.urlresolvers import reverse
-from location_field.models.plain import PlainLocationField
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator
+from django.db import models
+from django.db.models.signals import pre_save
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
+
+from location_field.models.plain import PlainLocationField
 # Create your models here.
 #===============================================
 # Kiilu
@@ -50,16 +49,27 @@ class UserSkills(models.Model):
     def __unicode__(self):
     	return str(self.user)
 
+
 class Dated(models.Model):
     user =  models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         )
     date = models.DateField()
-    hours = models.IntegerField(default=0)
-    
+    time = models.TimeField()
+        
     def __unicode__(self):
     	return str(self.user)
+
+class Willing_Hour(models.Model):
+    user =  models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        )
+    hours = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return str(self.user)
 
 #=======================================================
 
@@ -98,8 +108,8 @@ class Create_opportunity(models.Model):
         return reverse('helper_request', kwargs={'id': self.id})
     def get_absolute_chat_url(self):
         return reverse('chat:new_room', kwargs={'id': self.id})    
-    def get_absolute_commit_url(self):
-        return reverse('single_commitment', kwargs={'id':self.id})
+    def get_absolute_past_url(self):
+        return reverse('single_past_request', kwargs={'id':self.id})
         
 ##################################################################################################################################
 class RequestApplication(models.Model):

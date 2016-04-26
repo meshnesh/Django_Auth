@@ -13,8 +13,13 @@
 		{% csrf_token %}
 		<h4>When are you free?</h4>
 		<p><label>Date: </label>{{ date.date }}</p>
+		<p><label>Time: </label>{{ date.time }}</p>
+		<input type="submit" class="button" value="Add Days">
+	</form>
+	<form method="POST" action="" enctype="multipart/form-data" autocomplete='off'>
+		{% csrf_token %}
 		<h4>How much time can you give per week?</h4>
-		<p><label>Hours: </label>{{ date.hours }}</p>
+		<p><label>Hours: </label>{{ hour_form.hours }}</p>
 
 		<input type="submit" class="button" value="Next">
 	</form>
