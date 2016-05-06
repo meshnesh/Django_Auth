@@ -1,23 +1,23 @@
+from base64 import b64decode
+import cStringIO
 import random
 import string
-from django.db import transaction
-from django.shortcuts import render, get_object_or_404, redirect
-import haikunator
-from .models import Room
-from django.db import transaction
-from django.utils.text import slugify
-
-from django.db.models import Q
 
 from django.core.cache import cache
+from django.core.files.base import ContentFile
+from django.db import transaction
+from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.text import slugify
 
+import haikunator
+import simplejson
+
+from .forms import PicForm
+from .models import Room, MessagePic, Message
 from profiles.models import Create_opportunity, AcceptedRequests
-# def view_rooms(request):
-#     rooms = Room.objects.all()
-#     context = {
-#         "rooms": rooms,
-#     }
-#     return render(request, "all_rooms.html", context)
+
 
 def view_rooms(request):	
     show_items = Create_opportunity.objects.filter(
@@ -70,13 +70,14 @@ def chat_room(request, label):
         # If the room with the given label doesn't exist, automatically create it
         # upon first visit (a la etherpad).
         room, created = Room.objects.get_or_create(label=label)
-
+        form = PicForm()
         # We want to show the last 50 messages, ordered most-recent-last
-        messages = reversed(room.messages.order_by('-timestamp')[:50])
+        messages = reversed(room.messages.order_by('-timestamp')[:10])
 
         return render(request, "chat/room.html", {
             'room': room,
             'messages': messages,
+            'form': form,
         })
     else:
         return redirect("/")

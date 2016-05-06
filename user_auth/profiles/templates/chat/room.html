@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block extended_head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/skills.css' %}">
+{% endblock %}
 {% block content %}
-  {% load staticfiles %}
   <h1>{{ room.label }}</h1>
   <p class="quiet">
     Anyone with this URL can join the room and chat: 
@@ -18,16 +21,29 @@
           <tr>
             <td>{{ message.formatted_timestamp }}</td>
             <td>{{ message.handle }}</td>
+            {% if message.pic %}
+            <td><img src="{{ message.pic.picture.url }}" height="100px" width="100px" /></td>
+            {% else %}
             <td>{{ message.message }}</td>
+            {% endif %}
           </tr> 
         {% endfor %}
       </tbody>
       <tfoot>
       <tr>
         <td>Say something:</td>
-        <td colspan=2>
+        <td>
+        <form>
           <input id="message" type="text" placeholder="message">
           <button type="submit" id="go">Say it</button>
+          </form>
+        </td>
+        <td>
+        <form class="pic_form" method="POST" action="" enctype="multipart/form-data" autocomplete='off'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="button" value="Add Image">
+        </form>
         </td>
       </tfoot>
     </table>
@@ -35,6 +51,7 @@
   
   <script type="text/javascript" src='{% static "js/reconnecting-websocket.min.js" %}'></script>
   <script type="text/javascript" src='{% static "js/chat.js" %}'></script>
+<script type="text/javascript"src='{% static "js/ajax_csrf.js" %}'></script>
 
 {% endblock content %}
 
