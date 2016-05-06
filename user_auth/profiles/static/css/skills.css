@@ -11,3 +11,16 @@
 #id_coordinates{
     display:none;
 }
+.height{    
+    top: 50%;
+    transform: translateY(-50%);
+    position: relative;
+}
+[type=file] {
+    width: auto;
+}
+
+.slide__side-by-side{
+	background: #cccccc;
+	height: 620px;
+}

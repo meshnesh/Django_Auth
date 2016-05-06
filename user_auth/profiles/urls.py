@@ -17,6 +17,7 @@ urlpatterns = [
         url(r'^create/$', views.create_opportunity_form, name = "create"),
         url(r'^revive/(?P<id>[0-9]+)/$', views.revive_opportunity, name = "revive_opportunity"),
         url(r'^browse/$', views.browse, name = "browse"),
+        url(r'^settings/$', views.settings, name = "settings"),
         url(r'^commitments/$', views.commitments, name = "commitments"),
         url(r'^history/$', views.helper_history, name = "helper_history"),
         url(r'^commitments/(?P<id>[0-9]+)/$', views.single_commitment, name = "single_commitment"),

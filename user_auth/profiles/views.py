@@ -191,6 +191,54 @@ def days(request):
 	return render(request, "project/days.html", context)
 	
 
+def settings(request):	
+	user = User.objects.get(id=request.user.id)
+	location_form = PlacedForm(data = request.POST or None, instance=user)
+	print location_form	
+	if location_form.is_valid():
+		instance = location_form.save(commit=False)
+		instance.user = request.user
+		instance.save()
+
+
+	form = SkillsForm(data = request.POST or None, instance=user)	
+	singleskill = SingleSkillForm(data=request.POST or None, instance=user)
+
+	if form.is_valid():
+		instance = form.save(commit=False)
+		instance.user =request.user
+		instance.save()
+		form.save_m2m()
+		return redirect('helper')
+		
+	if singleskill.is_valid():
+		instance = singleskill.save(commit=False)
+		instance.save()
+	else:
+		singleskill = SingleSkillForm()
+
+	date = DateForm(data = request.POST or None, instance=user)
+
+	hour_form = HourForm(data=request.POST or None, instance=user)
+	if hour_form.is_valid():
+		ins = hour_form.save(commit=False)
+		ins.user = request.user
+		ins.save()
+		return redirect('skills')
+
+	if date.is_valid():
+		instance = date.save(commit=False)
+		instance.user = request.user
+		instance.save()
+	context = {
+		'form':form,
+		'location_form': location_form,
+		'singleskill': singleskill,
+		'date': date,
+		'hour_form': hour_form,
+	}
+	return render(request, "project/settings.html", context)
+	
 
 def current_opportunities(request):
 	current = Create_opportunity.objects.filter(
