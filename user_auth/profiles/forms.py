@@ -4,7 +4,7 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from .models import SimplePlace, Skills,  Dated, Create_opportunity, UserSkills, RequestApplication, Willing_Hour
+from .models import SimplePlace, Skills,  Dated, Create_opportunity, UserSkills, RequestApplication, Willing_Hour, UserProfilePic
 
 class SingleSkillForm(forms.ModelForm):
 	class Meta:
@@ -63,6 +63,13 @@ class HourForm(forms.ModelForm):
 		'hours',
 		}
 		
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+		model = UserProfilePic
+		fields = [
+		'avatar',       
+		]
+
 #########################################################################
 #frank
 class addForm(forms.ModelForm):

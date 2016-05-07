@@ -10,9 +10,15 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from location_field.models.plain import PlainLocationField
+from PIL import Image
 # Create your models here.
 #===============================================
 # Kiilu
+
+def upload_location(instance, filename):
+    return "%s%s"%(instance.id, filename)
+
+
 class Skills(models.Model):
     skill = models.CharField(max_length=255)
     def __unicode__(self):
@@ -137,7 +143,29 @@ class AcceptedRequests(models.Model):
     def __unicode__(self):
         return str(self.user) + ": " + str(self.requests)
         
-        
+class UserProfilePic(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        )
+    avatar = models.ImageField(
+        upload_to=upload_location,
+        null=True,
+        blank=True,
+        )
+    def __unicode__(self):
+        return self.avatar.url
+
+    def save(self, **kwargs):
+        if not self.avatar:
+            return            
+
+        super(UserProfilePic, self).save()
+        avatar = Image.open(self.avatar)
+        (width, height) = avatar.size     
+        size = ( 150, 150)
+        avatar = avatar.resize(size, Image.ANTIALIAS)
+        avatar.save(self.avatar.path)
 # Images profile
 
 class Document(models.Model):

@@ -21,8 +21,8 @@ from smtplib import SMTPRecipientsRefused
 from urllib import quote_plus
 
 from .custom_funcs import ical, calc_dist
-from .models import SimplePlace, Create_opportunity, RequestApplication, AcceptedRequests, Dated, Willing_Hour
-from .forms import SingleSkillForm, PlacedForm, SkillsForm, DateForm, addForm, HourForm
+from .models import SimplePlace, Create_opportunity, RequestApplication, AcceptedRequests, Dated, Willing_Hour, UserProfilePic
+from .forms import SingleSkillForm, PlacedForm, SkillsForm, DateForm, addForm, HourForm, UserProfileForm
 
 
 # Create your views here.
@@ -47,7 +47,13 @@ def seeker(request):
 	"""
 	Help seeker's profile.
 	"""
-	context = {}
+	pic = None
+	if UserProfilePic.objects.filter(user=request.user).exists():
+		print("hooll")
+		pic = UserProfilePic.objects.get(user=request.user)
+	context = {
+	'pic': pic,
+	}
 	template = 'profiles/seekerProfile.html'
 	return render(request, template, context)
 	
@@ -81,13 +87,16 @@ def helper(request):
 		complete += int(com.hours_required)
 	for requested in commitments:
 		summation += int(requested.hours_required)
-
-
+	pic = None
+	if UserProfilePic.objects.filter(user=request.user).exists():
+		print("hooll")
+		pic = UserProfilePic.objects.get(user=request.user)
 	context = {
 		'available': available,
 		'commited': commited,
 		'sum': summation,
 		'complete': complete,
+		'pic': pic,
 	}
 	template = 'profiles/helperProfile.html'
 	return render(request, template, context)
@@ -199,6 +208,15 @@ def settings(request):
 		instance = location_form.save(commit=False)
 		instance.user = request.user
 		instance.save()
+		
+	user_form = UserProfileForm(request.POST or None, request.FILES or None)
+	if UserProfilePic.objects.filter(user=request.user).exists():
+		pic = UserProfilePic.objects.get(user=request.user)
+		user_form = UserProfileForm(request.POST or None, request.FILES or None, instance=pic)
+	if user_form.is_valid():
+		instance = user_form.save(commit=False)
+		instance.user = request.user
+		instance.save()
 
 
 	form = SkillsForm(data = request.POST or None, instance=user)	
@@ -209,7 +227,6 @@ def settings(request):
 		instance.user =request.user
 		instance.save()
 		form.save_m2m()
-		return redirect('helper')
 		
 	if singleskill.is_valid():
 		instance = singleskill.save(commit=False)
@@ -224,7 +241,6 @@ def settings(request):
 		ins = hour_form.save(commit=False)
 		ins.user = request.user
 		ins.save()
-		return redirect('skills')
 
 	if date.is_valid():
 		instance = date.save(commit=False)
@@ -236,6 +252,7 @@ def settings(request):
 		'singleskill': singleskill,
 		'date': date,
 		'hour_form': hour_form,
+		'user_form': user_form,
 	}
 	return render(request, "project/settings.html", context)
 	

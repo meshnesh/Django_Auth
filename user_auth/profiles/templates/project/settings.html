@@ -39,7 +39,11 @@
         <i class='fa fa-coffee'></i>
         General
       </h1>
-      <h1>User settings</h1>
+      <form method="POST" action="" enctype="multipart/form-data" autocomplete='off'>
+      {% csrf_token %}
+    {{ user_form.avatar }}
+
+    <input type="submit" class="button" value="Upload">
             </div>
             <div class='slide--content__pane'>
                 <h1>
