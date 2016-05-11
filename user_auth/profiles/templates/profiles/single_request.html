@@ -24,7 +24,7 @@
 	  	</p>
 	  	<h6>Pending Offers</h6>
       {% for user in offers %}
-      <a href="{% url 'profile' %}"><p>{{ user.username }}</p></a>
+      <a href="{% url 'profile' user.username %}"><p>{{ user.username }}</p></a>
       {% endfor %}
     </div>
   

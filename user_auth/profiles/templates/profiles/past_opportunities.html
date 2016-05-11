@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="browse_bg">
+<div class="callout clearfix">
+  <a class="button float-left" href="{% url 'seeker' %}" >> Back</a>
+  <a class="button float-right" href="../accounts/logout/" >Logout</a>
+</div>
+
+<div class="row expanded">
+
+{% for item in current %}     
+
+  <div class="medium-4 columns">
+    <div class="card">
+      <div class="image">
+        <img src=" https://www.justenergy.com/media/177703/hdr_opportunity.jpg">
+        <!--{{ item.image.url }}-->
+        <span class="title">{{ item.title }}</span>
+      </div>
+      <div class="content">
+      	<h6> {{ item.location }}</h6>
+        <!--<p>{{ item.description}}</p>-->
+      </div>
+      <div class="action">
+        <a href='{{ item.get_absolute_past_url }}' class="button">View More</a>
+      </div>
+    </div>
+    <!--<a href="{{ item.get_absolute_url }}"><h3> {{ item.title }}</h3></a>-->
+  </div>
+  <!--<div class="medium-6 columns end">-->
+  <!--  <div class="card">-->
+  <!--    <div class="content">-->
+  <!--      <span class="title">Robert Frost</span>-->
+  <!--      <p>Two roads diverged in a yellow wood,	 And sorry I could not travel both	 And be one traveler, long I stood	 And looked down one as far as I could	. To where it bent in the undergrowth;</p>-->
+  <!--    </div>-->
+  <!--    <div class="action">-->
+  <!--      <a href='#'>This is a link</a>-->
+  <!--      <a href='#'>This is a link</a>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--</div>-->
+
+
+{% endfor %}
+</div>
+</div>
+{% endblock content %}

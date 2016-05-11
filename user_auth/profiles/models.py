@@ -1,46 +1,24 @@
 from __future__ import unicode_literals
 
-from django.db import models
-from django.utils import timezone
-from django.db.models.signals import pre_save
 from django.conf import settings
-
-# Kiilus imports
 from django.core.urlresolvers import reverse
-from location_field.models.plain import PlainLocationField
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator
-# Create your models here.
-# Create your models here.
-class profile(models.Model):
-	name = models.CharField(max_length = 1200)
-	description = models.TextField(default = 'description default')
-	
-	def __unicode__(self):
-		return self.name
-		
-		
-		
-# class Opportunity(models.Model):
-# 	user = models.ForeignKey(
-# 	    settings.AUTH_USER_MODEL,
-# 	    on_delete=models.CASCADE,
-# 	    )
-# 	title = models.CharField(max_length=120)
-# 	image = models.ImageField(null=True, blank=True)
-# 	description = models.TextField()
-# 	timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
-	
-	
-# 	def __str__(self):
-# 		return self.title
+from django.db import models
+from django.db.models.signals import pre_save
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
-
-# 	def __unicode__(self):
-# 		return self.title
+from location_field.models.plain import PlainLocationField
+from PIL import Image
+# Create your models here.
 #===============================================
 # Kiilu
+
+def upload_location(instance, filename):
+    return "%s%s"%(instance.id, filename)
+
+
 class Skills(models.Model):
     skill = models.CharField(max_length=255)
     def __unicode__(self):
@@ -77,16 +55,27 @@ class UserSkills(models.Model):
     def __unicode__(self):
     	return str(self.user)
 
+
 class Dated(models.Model):
     user =  models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         )
     date = models.DateField()
-    hours = models.IntegerField(default=0)
-    
+    time = models.TimeField()
+        
     def __unicode__(self):
     	return str(self.user)
+
+class Willing_Hour(models.Model):
+    user =  models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        )
+    hours = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return str(self.user)
 
 #=======================================================
 
@@ -104,7 +93,7 @@ class Create_opportunity(models.Model):
     coordinates = PlainLocationField(based_fields=['location'], zoom=7)
     description = models.TextField(null=True)
     skills = models.ManyToManyField(Skills)
-    hours_required = models.CharField(max_length=140, blank = True)
+    hours_required = models.IntegerField(default=0)
     starting_time = models.TimeField()
     stopping_time = models.TimeField()
     starting_date = models.DateField()
@@ -124,7 +113,9 @@ class Create_opportunity(models.Model):
     def get_absolute_helper_url(self):
         return reverse('helper_request', kwargs={'id': self.id})
     def get_absolute_chat_url(self):
-        return reverse('chat:new_room', kwargs={'id': self.id})
+        return reverse('chat:new_room', kwargs={'id': self.id})    
+    def get_absolute_past_url(self):
+        return reverse('single_past_request', kwargs={'id':self.id})
         
 ##################################################################################################################################
 class RequestApplication(models.Model):
@@ -132,15 +123,49 @@ class RequestApplication(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
         )
-    requests = models.OneToOneField(
+    requests = models.ForeignKey(
         Create_opportunity,
         on_delete=models.CASCADE)
-    application = models.BooleanField()
+
+    def __unicode__(self):
+        return str(self.user) + ": " + str(self.requests)
+
+class AcceptedRequests(models.Model):
+    user =  models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+        )
+    requests = models.ForeignKey(
+        Create_opportunity,
+        on_delete=models.CASCADE) 
+
 
     def __unicode__(self):
         return str(self.user) + ": " + str(self.requests)
         
-        
+class UserProfilePic(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        )
+    avatar = models.ImageField(
+        upload_to=upload_location,
+        null=True,
+        blank=True,
+        )
+    def __unicode__(self):
+        return self.avatar.url
+
+    def save(self, **kwargs):
+        if not self.avatar:
+            return            
+
+        super(UserProfilePic, self).save()
+        avatar = Image.open(self.avatar)
+        (width, height) = avatar.size     
+        size = ( 150, 150)
+        avatar = avatar.resize(size, Image.ANTIALIAS)
+        avatar.save(self.avatar.path)
 # Images profile
 
 class Document(models.Model):

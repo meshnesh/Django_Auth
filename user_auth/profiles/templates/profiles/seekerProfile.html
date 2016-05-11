@@ -3,13 +3,19 @@
 
 
      {% block content %}
+     <div class="row">
+       {% include 'profiles/navigation.html' %}
+     </div>
       <!--<a class="button" href="../accounts/logout/" >Logout</a>-->
 <div class="container_profile">
-  <div class="avatar-flip">
+   <div  id="prof-pic">
+  {% if pic %}
+  <img src="{{ pic.avatar.url }}">
+  {% else %}
     <img src="http://www.twcdi.ie/images/avatars/default_set/default-avatar.png" height="150" width="150">
-    <img src="http://s2.favim.com/orig/28/imagine-separate-with-comma-text-typo-typography-Favim.com-231151.gif" height="150" width="150">
+  {% endif %}
   </div>
-  <h2>John Doe</h2>
+  <h2>{{ user.username }}</h2>
   <form>
     <select name="link-select" onchange="location = this.value;">
         <option value = "{% url 'seeker' %}">I want to seek help</option>
@@ -17,7 +23,8 @@
     </select>
     </form>
   <p><a class="button profile_links" href="{% url 'create' %}">Request Help</a></p>
-  <p><a class="button profile_links" href="{% url 'current_opportunities' %}">Recent Activities</a></p>
+  <p><a class="button profile_links" href="{% url 'current_opportunities' %}">Current Activities</a></p>
+  <p><a class="button profile_links" href="{% url 'past_opportunities' %}">Past Activities</a></p>
   <p><a class="button profile_links" href="{%  url 'chat:view_rooms' %}">Community</a></p>
 </div>
 {% endblock %}

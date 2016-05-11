@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block extended_head %}
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/skills.css' %}" />
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    {% endblock %}
+
+{% block content %}
+<div class="height">
+
+    <div class='slide__side-by-side'>
+        <div class='slide--tabs'>
+            <ul>
+                <li>
+                    <i class='ion-ios-gear-outline'></i> General
+                </li>
+                <li>
+                    <i class='fa fa-caret-right'></i> Profile
+                </li>
+                <li>
+                    <i class='fa fa-caret-right'></i> Location
+                </li>
+
+                <li>
+                    <i class='fa fa-caret-righ
+                    t'></i> Profile
+                </li
+                >
+                <li>
+                    <i class='fa fa-caret-right'></i> Location
+                </li>
+            </ul>
+        </div>
+        <div class='slide--content'>
+            <div class='slide--content__pane'>
+                <h1>
+        <i class='fa fa-coffee'></i>
+        General
+      </h1>
+      <form method="POST" action="" enctype="multipart/form-data" autocomplete='off'>
+      {% csrf_token %}
+    {{ user_form.avatar }}
+
+    <input type="submit" class="button" value="Upload">
+            </div>
+            <div class='slide--content__pane'>
+                <h1>
+        <i class='fa fa-glass ion-ios-gear-outline'></i>
+       Hours Free
+      </h1>
+                
+    <form method="POST" action="" enctype="multipart/form-data" autocomplete='off'>
+        {% csrf_token %}
+        <h4>How much time can you give per week?</h4>
+        <p><label>Hours: </label>{{ hour_form.hours }}</p>
+
+        <input type="submit" class="button" value="Next">
+    </form>
+            </div>
+            <div class='slide--content__pane'>
+                <h1>
+        <i class='fa fa-heart'></i>
+        Days Free
+      </h1>
+                
+<form method="POST" action="" enctype="multipart/form-data" autocomplete='off'>
+        {% csrf_token %}
+        <h4>When are you free?</h4>
+        <p><label>Date: </label>{{ date.date }}</p>
+        <p><label>Time: </label>{{ date.time }}</p>
+        <input type="submit" class="button" value="Add Days">
+    </form>
+            </div>
+            <div class='slide--content__pane'>
+                <h1>
+        <i class='fa fa-heart'></i>
+        Location
+      </h1>
+                <form method="POST" action="" enctype="multipart/form-data" autocomplete='off'>
+        {% csrf_token %}
+        <p>
+        <label>Location: </label>
+        {{ location_form.location }}
+        </p>
+        <p>
+        <label>Distance away(in km): </label>
+        {{ location_form.distance_away }}
+        </p>
+        <p>
+        {{ location_form.coordinates }}
+        </p>
+
+        <input type="submit" class="button text-center" value="Next">
+    </form>
+            </div>
+            <div class='slide--content__pane'>
+                <h1>
+        <i class='fa fa-heart'></i>
+        Skills
+      </h1>
+                
+    <form method="POST" action="" enctype="multipart/form-data" autocomplete='off' class="checkbox">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <input type="submit" class="button" value="Next">
+    </form>
+    <form method="POST" action="" enctype="multipart/form-data" autocomplete='off'>
+        {% csrf_token %}
+        <h4>Create New Skills</h4>
+        {{ singleskill.as_p }}
+
+        <input type="submit" class="button" value="Add New Skill">
+    </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript" src="{% static 'js/datepicker.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/form.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.livequery.js' %}"></script>
+<script type="text/javascript" src="//maps.google.com/maps/api/js?key=AIzaSyD0MSmH6-nAgxIeJhO_SBiNjrbKyPHhQ9k"></script>
+
+    {% endblock %}

@@ -1,3 +1,11 @@
+$(window).load(function() {
+    setTimeout(function(){
+      $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+    }, 2000);
+});
+
+
+
 $(function() {
     // When we're using HTTPS, use WSS too.
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
@@ -22,7 +30,7 @@ $(function() {
         var ele = $('<tr></tr>');
         
 
-        if(!data.message.trim()==""){
+        if(data.message && !data.message.trim()==""){
             ele.append(
                 $("<td></td>").text(data.timestamp)
             );
@@ -30,8 +38,22 @@ $(function() {
                 $("<td></td>").text(data.handle)
             );
             ele.append(
-                $("<td></td>").text(data.message)
+                $("<td></td>").text(data.message)            
             );
+            chat.append(ele);
+        } else if(data.image){
+            ele.append(
+                $("<td></td>").text(data.timestamp)
+            );
+            ele.append(
+                $("<td></td>").text(data.handle)
+            );
+            ele.append(
+                $("<td></td>").html($('<img>').attr('src', data.image).css({
+                'width': '100px'
+            }))
+            );
+
             chat.append(ele);
         }
         
@@ -48,6 +70,56 @@ $(function() {
         $("#message").val('').focus();
         return false;
     });
+
+
+   $(".pic_form").submit(function(event) {
+    event.preventDefault();
+    var file = $('#id_picture').get(0).files[0];
+    if (file.type.match('image.*')) {
+     var reader = new FileReader();
+     reader.readAsDataURL(file);
+     reader.onloadend = function() {
+        var picture = {
+        image: reader.result,
+        filename: file.name,
+       }
+       chatsock.send(JSON.stringify(picture));
+        $('#id_picture').val('');
+       return false;
+      //  success: function(data) {
+      //   console.log("Success");
+      //   $('#id_picture').val('');
+      //   var chat = $("#chat");
+      //   var ele = $('<tr></tr>');
+
+      //   ele.append(
+      //    $("<td></td>").text(data.timestamp)
+      //   );
+      //   ele.append(
+      //    $("<td></td>").text(data.handle)
+      //   );
+      //   ele.append(
+      //    $("<td></td>").html($('<img>').attr('src', data.image).css({
+      //     'width': '100px'
+      //    }))
+      //   );
+
+      //   chat.append(ele);
+
+      //  },
+      //  error: function(error) {
+      //   console.log("error");
+      //   console.log(error);
+      //   console.log(error.responseText)
+      //  }
+      // });
+     }
+    } else {
+     alert("You tried to uploaded a file which is not an image.");
+     $('#id_picture').val('');
+    }
+   });
+  
     
     function splitString (string, size) {
     	var re = new RegExp('.{1,' + size + '}', 'g');
@@ -62,6 +134,5 @@ $(function() {
         } else{
             return null;
         }
-    }
-    
+    }    
 });

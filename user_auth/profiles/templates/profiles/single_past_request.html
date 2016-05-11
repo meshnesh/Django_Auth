@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="browse_bg">
+<div class="callout clearfix">
+  <a class="button float-left" href="{% url 'past_opportunities' %}" >Back</a>
+  <a class="button float-right" href="../../../accounts/logout/" >Logout</a>
+</div>
+
+<div class="row">
+  <div class="small-8 medium-6 large-5 small-centered columns opp">
+
+    <div class="header panel">
+      <div class="sign">
+        <h6>{{ opportunity.title }}</h6>
+      </div>
+      <p>
+      	<span>{{ opportunity.location }}</span> 
+      	<br> From:{{ opportunity.starting_date }} &nbsp;To:{{ opportunity.stopping_date }}
+	  	{% for skill in opportunity.skills.all %}
+			Skill Set needed:{{ skill }}
+	  	{% endfor %}
+	  	</p>
+    <a href="{% url 'revive_opportunity' opportunity.id %}" class="button">Revive</a>
+    </div>
+  
+  </div>
+</div>
+{% endblock %}
+

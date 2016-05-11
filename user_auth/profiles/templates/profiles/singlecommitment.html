@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="callout clearfix">
+  <a class="button float-left" href="{% url 'commitments' %}" >Back</a>
+  <a class="button float-right" href="../../../accounts/logout/" >Logout</a>
+</div>
+
+<div class="row">
+  <div class="small-8 medium-6 large-5 small-centered columns opp">
+
+    <div class="header panel">
+      <div class="sign">
+        <h6>{{ opportunity.title }}</h6>
+      </div>
+      <p>
+      	<span>{{ opportunity.location }}</span> 
+      	<br> From:{{ opportunity.starting_date }} &nbsp;To:{{ opportunity.stopping_date }}
+	  	{% for skill in opportunity.skills.all %}
+			Skill Set needed:{{ skill }}
+	  	{% endfor %}
+	  	</p>
+	  	<form method="GET" action="" class="column small-12">
+    <input class="button" type="submit" name="subb" value="Quit Job" />
+    </form>
+    </div>
+  
+  </div>
+</div>
+<script type="text/javascript" src="{% static 'js/submit_button.js' %}"></script>
+{% endblock %}
+

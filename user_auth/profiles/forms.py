@@ -1,9 +1,10 @@
-from django import forms
-from django.utils import timezone
 import datetime
 
-from .models import SimplePlace, Skills,  Dated, Create_opportunity, UserSkills, RequestApplication
+from django import forms
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
+from .models import SimplePlace, Skills,  Dated, Create_opportunity, UserSkills, RequestApplication, Willing_Hour, UserProfilePic
 
 class SingleSkillForm(forms.ModelForm):
 	class Meta:
@@ -46,23 +47,29 @@ class DateForm(forms.ModelForm):
 		model = Dated
 		fields = [
 		'date',
-		'hours'
+		'time',
 		]
 		widgets = {
-		'date': forms.DateInput(attrs={
+		'date': forms.DateTimeInput(attrs={
 			'class': 'datepicker'
-			})
+			}),
+		'time': forms.TimeInput(attrs={'class':'timepicker'}),
 		}
-class ApplyForm(forms.ModelForm):
+
+class HourForm(forms.ModelForm):
 	class Meta:
-		model = RequestApplication
-		fields = [
-		'application'
-		]
-		widgets = {
-		'application': forms.RadioSelect
+		model = Willing_Hour
+		fields = {
+		'hours',
 		}
 		
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+		model = UserProfilePic
+		fields = [
+		'avatar',       
+		]
+
 #########################################################################
 #frank
 class addForm(forms.ModelForm):

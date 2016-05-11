@@ -96,7 +96,7 @@ nav li a {
 
 nav li a:before {
     content: '';
-    width: 70px;
+    width: 40px;
     height: 2px;
     background-color: #fff;
     position: absolute;

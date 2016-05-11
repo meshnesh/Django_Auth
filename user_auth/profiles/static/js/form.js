@@ -139,7 +139,7 @@
                 if (geocoder) {
                     geocoder.geocode({"latLng": location}, function(results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
-                            address.val(results[0].formatted_address);
+                            address.val(results[1].formatted_address);
                         }
                     });
                 }
